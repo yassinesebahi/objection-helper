@@ -2,10 +2,21 @@ import streamlit as st
 import pandas as pd
 import altair as alt
 
-# Function to display the Landing Page
+def hide_streamlit_menu_footer():
+    st.markdown(
+        """
+        <style>
+        #MainMenu {visibility: hidden;}
+        footer {visibility: hidden;}
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
+# Example usage
 def landing_page():
-    st.title("Gemeente Amsterdam")
-    st.header("Objection Helper")
+    st.title("Objection Helper")
+    st.markdown("Welcome to the Objection Helper. Click start to proceed.")
     if st.button("Start"):
         st.session_state.page = "Submit Information"
 
@@ -65,6 +76,12 @@ def result_page():
 # Initialize session state
 if "page" not in st.session_state:
     st.session_state.page = "Landing"
+
+# Call the function at the start of your Streamlit app
+hide_streamlit_menu_footer()
+
+# Display the black header without the stepper
+st.header("Municipality of Amsterdam")
 
 # Page routing
 if st.session_state.page == "Landing":
