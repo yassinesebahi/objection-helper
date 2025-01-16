@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import altair as alt
+from ScriptXLM_RoBERTa import predict_with_loaded_model
 
 def hide_streamlit_menu_footer():
     st.markdown(
@@ -71,13 +72,10 @@ def submit_information_page():
                 st.session_state.page = "Landing"
         with col2:
             # Styled green "Proceed" button
-            if st.button("Proceed", key="proceed_button", use_container_width=True):
+            if st.button("Proceed", key="proceed_button", use_container_width=True):  
+                prediction = predict_with_loaded_model(objection_input)
+                st.session_state.result = prediction
                 st.session_state.page = "Result"
-                st.session_state.result = {
-                    "ID": id_input,
-                    "Subject": subject_input,
-                    "Objection": objection_input
-                }
 
 def result_page():
     st.title("Result")
