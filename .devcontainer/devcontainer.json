@@ -6,7 +6,14 @@
     "codespaces": {
       "openFiles": [
         "README.md",
-        "streamlit_app.py"
+        "streamlit_app.py",
+        "ScripXML_RoBERTa.py",
+        "images/GASD_1.png",
+        "XML-RoBERTa.bin/config.json",
+        "XML-RoBERTa.bin/model.safetensors",
+        "XMLRobertaTokenizer.json/sentencepiece.bpe.model",
+        "XMLRobertaTokenizer.json/special_tokens_map.json",
+        "XMLRobertaTokenizer.json/tokenizer_config.json"
       ]
     },
     "vscode": {
