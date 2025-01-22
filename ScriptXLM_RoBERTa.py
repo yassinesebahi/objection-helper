@@ -9,7 +9,7 @@ from transformers import XLMRobertaModel
 # ================================
 # Load Data
 # ================================
-data = pd.read_csv('filtered_df.csv')
+data = pd.read_csv('data/filtered_df.csv')
 
 # Process the "Law Used" column to extract full legal articles
 data['Laws Used'] = data['Laws Used'].apply(lambda x: eval(x) if isinstance(x, str) else [])
@@ -138,7 +138,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 # Load the model state dictionary
 model_load_path = "XLM-RoBERTa.pth"
 model = CustomXLMRoberta("xlm-roberta-base", len(unique_laws))
-model.load_state_dict(torch.load(model_load_path))
+model.load_state_dict(torch.load(model_load_path, map_location=torch.device('cpu')))
 model.to(device)
 print("Model loaded successfully.")
 

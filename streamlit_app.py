@@ -94,7 +94,7 @@ def result_page():
 
     # Get the result from session state
     result = st.session_state.get("result", ("No result available", [0, 0]))
-    predicted_label, probabilities = result
+    predicted_label, laws, probabilities = result
 
     # Map for labels
     label_map = {0: "Ongegrond", 1: "Gegrond"}
@@ -133,7 +133,7 @@ def result_page():
 
         col1, col2 = st.columns(2)
         with col1:
-            if st.button("Quit", key="quit_button_result", use_container_width=True):
+            if st.button("Restart", key="quit_button_result", use_container_width=True):
                 st.session_state.page = "Landing"
         with col2:
             if st.button("Save", key="save_button", use_container_width=True):
