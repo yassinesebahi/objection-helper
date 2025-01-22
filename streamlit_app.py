@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import altair as alt
-from ScriptXLM_RoBERTa import predict_with_loaded_model
+from ScriptXLM_RoBERTa import predict_with_loaded_model, predict_with_top_5_laws, predict_with_top_5_words_and_sentences
 
 def hide_streamlit_menu_footer():
     st.markdown(
@@ -89,55 +89,78 @@ def submit_information_page():
                 else:
                     st.error("Please enter the objection details before proceeding.")
 
-def result_page():
+def result_page(): 
     st.title("Result")
 
     # Get the result from session state
     result = st.session_state.get("result", ("No result available", [0, 0]))
     predicted_label, laws, probabilities = result
-
+    objection_input = st.session_state.get("objection_input", "")
     # Map for labels
     label_map = {0: "Ongegrond", 1: "Gegrond"}
 
+    # Predict with top 5 laws and words
+    dictum_prediction, top_5_laws = predict_with_top_5_laws(objection_input)
+    dictum_prediction_words, top_5_laws_2, top_5_words, top_3_sentences = predict_with_top_5_words_and_sentences(objection_input)
+
+    # Label mapping
+    label_text = label_map.get(dictum_prediction, "Unknown")
+    
     # Display the result with the mapped label
     if isinstance(predicted_label, int):
         label_text = label_map.get(predicted_label, "Unknown")
-        st.write(f"Result: {label_text}")
+        st.subheader(f"Prediction: {label_text}")
         prob_text = probabilities[predicted_label]
         st.write(f"Probability: {prob_text}")
     else:
         st.write("No valid result available")
 
-    with st.container():
-        col1, col2 = st.columns(2)
-        with col1:
-            st.text_input("Objection ID", value=st.session_state.get("id_input", ""), disabled=True)
-            st.text_input("Subject", value=st.session_state.get("subject_input", ""), disabled=True)
-            st.text_area("Objection", value=st.session_state.get("objection_input", ""), disabled=True)
-        with col2:
-            st.subheader("Top 5 Important Words for Prediction")
-            data = pd.DataFrame({
-                'Word': ['vergunning', 'ontheffing', 'wijziging', 'voorwaarden', 'herziening'],
-                'Importance Score': [0.25, -0.15, 0.1, 0.05, -0.05]
-            })
-            chart = alt.Chart(data).mark_bar().encode(
-                x=alt.X('Importance Score', scale=alt.Scale(domain=(-0.3, 0.3))),
-                y='Word',
-                color=alt.condition(
-                    alt.datum['Importance Score'] > 0,
-                    alt.value('green'),
-                    alt.value('red')
-                )
-            )
-            st.altair_chart(chart, use_container_width=True)
+    st.text_input("Objection ID", value=st.session_state.get("id_input", ""), disabled=True)
+    st.text_input("Subject", value=st.session_state.get("subject_input", ""), disabled=True)
+    st.text_area("Objection", value=st.session_state.get("objection_input", ""), disabled=True)
 
-        col1, col2 = st.columns(2)
-        with col1:
-            if st.button("Restart", key="quit_button_result", use_container_width=True):
-                st.session_state.page = "Landing"
-        with col2:
-            if st.button("Save", key="save_button", use_container_width=True):
-                st.write("Result saved!")
+
+    # Display Top 5 Laws
+    st.subheader("Top 5 Relevant Laws")
+    laws_df = pd.DataFrame(top_5_laws, columns=["Law", "Score"])
+    laws_chart = alt.Chart(laws_df).mark_bar().encode(
+        x=alt.X("Score", scale=alt.Scale(domain=[0, 1])),
+        y=alt.Y("Law", sort="-x"),
+        color=alt.value("blue")
+    )
+    st.altair_chart(laws_chart, use_container_width=True)
+
+    # Display Top 5 Words
+    st.subheader("Top 5 Words Contributing to the Prediction")
+    words_df = pd.DataFrame(top_5_words[:5], columns=["Word", "Score"])
+    words_chart = alt.Chart(words_df).mark_bar().encode(
+        x=alt.X("Score", scale=alt.Scale(domain=[0, 1])),
+        y=alt.Y("Word", sort="-x"),
+        color=alt.condition(
+            alt.datum.Score > 0,
+            alt.value("green"),
+            alt.value("red")
+        )
+    )
+    st.altair_chart(words_chart, use_container_width=True)
+
+    # Display Sentence Scores
+    st.subheader("Sentence-Level Scores")
+    if top_3_sentences:
+        for sentence, score in top_3_sentences:  # Loop through all sentence-score pairs
+            st.markdown(f"- **{sentence}**: {score:.4f}")
+    else:
+        st.write("No sentences available for display.")
+
+
+    # Navigation buttons
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.button("Restart", key="quit_button_result", use_container_width=True):
+            st.session_state.page = "Landing"
+    with col2:
+        if st.button("Save", key="save_button", use_container_width=True):
+            st.write("Result saved!")
 
 
 # Initialize session state

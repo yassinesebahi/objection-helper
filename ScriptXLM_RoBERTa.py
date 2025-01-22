@@ -156,32 +156,32 @@ model.to(device)
 # ----------------------------------------------------------------
 # This can be modified to use the loaded model for prediction
 # ----------------------------------------------------------------
-NEW_OBJECTION = """Hierbij maak ik bezwaar tegen de mij opgelegde boete van vijftig euro voor het verkeerd aanbieden van afval op vijftien januari 2024.
+# NEW_OBJECTION = """Hierbij maak ik bezwaar tegen de mij opgelegde boete van vijftig euro voor het verkeerd aanbieden van afval op vijftien januari 2024.
 
-Op de ochtend van vijftien januari heb ik een grote doos karton naast de papiercontainer gezet, omdat deze vol was. Ik heb de doos netjes naast de container geplaatst en was van plan om hem later op de dag weg te brengen als de container geleegd was. Helaas heb ik niet op een bordje gelet dat aangaf dat het afval op die plek niet geplaatst mocht worden.
+# Op de ochtend van vijftien januari heb ik een grote doos karton naast de papiercontainer gezet, omdat deze vol was. Ik heb de doos netjes naast de container geplaatst en was van plan om hem later op de dag weg te brengen als de container geleegd was. Helaas heb ik niet op een bordje gelet dat aangaf dat het afval op die plek niet geplaatst mocht worden.
 
-Ik vind de boete onterecht, omdat ik ervan uitging dat het geen probleem was om de doos tijdelijk naast de volle container te zetten. Ik heb altijd mijn best gedaan om mijn afval goed te scheiden en heb nog nooit eerder een boete gehad.
+# Ik vind de boete onterecht, omdat ik ervan uitging dat het geen probleem was om de doos tijdelijk naast de volle container te zetten. Ik heb altijd mijn best gedaan om mijn afval goed te scheiden en heb nog nooit eerder een boete gehad.
 
-Bijgevoegd vindt u een foto van de volle papiercontainer op de dag van de overtreding.
+# Bijgevoegd vindt u een foto van de volle papiercontainer op de dag van de overtreding.
 
-Ik verzoek u vriendelijk de boete te annuleren."""
+# Ik verzoek u vriendelijk de boete te annuleren."""
 
-# Test the model with a new objection
-predicted_label, predicted_laws, predicted_probabilities = predict_with_loaded_model(NEW_OBJECTION)
-print(f"Predicted label: {predicted_label} (1: Gegrond, 0: Ongegrond)")
-print(f"Probabity (Ongegrond): {predicted_probabilities[0]}\nProbabity (Gegrond): {predicted_probabilities[1]}")
+# # Test the model with a new objection
+# predicted_label, predicted_laws, predicted_probabilities = predict_with_loaded_model(NEW_OBJECTION)
+# print(f"Predicted label: {predicted_label} (1: Gegrond, 0: Ongegrond)")
+# print(f"Probabity (Ongegrond): {predicted_probabilities[0]}\nProbabity (Gegrond): {predicted_probabilities[1]}")
 
-prediction, top_5_laws, top_5_words, top_3_sentences = predict_with_top_5_words_and_sentences(NEW_OBJECTION)
+# prediction, top_5_laws, top_5_words, top_3_sentences = predict_with_top_5_words_and_sentences(NEW_OBJECTION)
 
-print(f"Predicted label: {prediction} (1: Gegrond, 0: Ongegrond)")
-print("Top 5 Laws:")
-for law, prob in top_5_laws:
-    print(f"{law}: {prob:.4f}")
+# print(f"Predicted label: {prediction} (1: Gegrond, 0: Ongegrond)")
+# print("Top 5 Laws:")
+# for law, prob in top_5_laws:
+#     print(f"{law}: {prob:.4f}")
 
-print("\nTop 5 Words by Attention (Filtered):")
-for word, score in top_5_words:
-    print(f"{word}: {score:.4f}")
+# print("\nTop 5 Words by Attention (Filtered):")
+# for word, score in top_5_words:
+#     print(f"{word}: {score:.4f}")
 
-print("\nTop 3 Sentences by Attention:")
-for sentence, score in top_3_sentences:
-    print(f"'{sentence}': {score:.4f}")
+# print("\nTop 3 Sentences by Attention:")
+# for sentence, score in top_3_sentences:
+#     print(f"'{sentence}': {score:.4f}")
