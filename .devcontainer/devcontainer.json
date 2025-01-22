@@ -8,9 +8,10 @@
         "README.md",
         "streamlit_app.py",
         "ScripXML_RoBERTa.py",
+        "CustomXLMRoberta.py",
+        "data/filtered_df.csv",
         "images/GASD_1.png",
-        "XML-RoBERTa.bin/config.json",
-        "XML-RoBERTa.bin/model.safetensors",
+        "XLM-RoBERTa.pth",
         "XMLRobertaTokenizer.json/sentencepiece.bpe.model",
         "XMLRobertaTokenizer.json/special_tokens_map.json",
         "XMLRobertaTokenizer.json/tokenizer_config.json"
