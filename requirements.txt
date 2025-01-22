@@ -3,3 +3,4 @@ gdown
 torch
 transformers
 sentencepiece
+python-docx

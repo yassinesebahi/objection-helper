@@ -2,6 +2,8 @@ import streamlit as st
 import pandas as pd
 import altair as alt
 from ScriptXLM_RoBERTa import predict_with_loaded_model, predict_with_top_5_laws, predict_with_top_5_words_and_sentences
+from io import BytesIO
+from docx import Document
 
 def hide_streamlit_menu_footer():
     st.markdown(
@@ -61,7 +63,7 @@ def submit_information_page():
     if "id_input" not in st.session_state:
         st.session_state.id_input = ""
     if "subject_input" not in st.session_state:
-        st.session_state.subject_input = ""
+        st.session_state.subject_input = "Waste Fines"  # Default value for the dropdown
     if "objection_input" not in st.session_state:
         st.session_state.objection_input = ""
 
@@ -70,7 +72,16 @@ def submit_information_page():
         with col1:
             # Use the session state directly for the input widgets
             id_input = st.text_input("ID of Objection*", value=st.session_state.id_input, key="id_input")
-            subject_input = st.text_input("Subject*", value=st.session_state.subject_input, key="subject_input")
+            
+            # Change subject_input to a dropdown (selectbox)
+            subject_input = st.selectbox(
+                "Subject*",
+                ["Waste Fines", "Vehicle Towing"],
+                index=["Waste Fines", "Vehicle Towing"].index(st.session_state.subject_input),  # Default selection
+                key="subject_input"
+            )
+
+            # Keep the text area for the objection
             objection_input = st.text_area("Objection*", value=st.session_state.objection_input, key="objection_input")
             
         with col2:
@@ -152,6 +163,45 @@ def result_page():
     else:
         st.write("No sentences available for display.")
 
+     # Create a Word document with the result details
+    def create_result_doc():
+        doc = Document()
+        
+        # Add basic information to the document
+        doc.add_heading("Objection Details", 0)
+        doc.add_paragraph(f"Objection ID: {st.session_state.get('id_input', '')}")
+        doc.add_paragraph(f"Subject: {st.session_state.get('subject_input', '')}")
+        doc.add_paragraph(f"Objection: {st.session_state.get('objection_input', '')}")
+        
+        # Add prediction details
+        doc.add_heading("Prediction", level=1)
+        doc.add_paragraph(f"Prediction: {label_text}")
+        doc.add_paragraph(f"Probability: {prob_text}")
+        
+        # Add Top 5 Laws
+        doc.add_heading("Top 5 Relevant Laws", level=1)
+        for law, score in top_5_laws:
+            doc.add_paragraph(f"{law}: {score}")
+        
+        # Add Top 5 Words
+        doc.add_heading("Top 5 Words Contributing to the Prediction", level=1)
+        for word, score in top_5_words[:5]:
+            doc.add_paragraph(f"{word}: {score}")
+
+        # Add Sentence-Level Scores
+        doc.add_heading("Sentence-Level Scores", level=1)
+        if top_3_sentences:
+            for sentence, score in top_3_sentences:
+                doc.add_paragraph(f"{sentence}: {score:.4f}")
+        else:
+            doc.add_paragraph("No sentences available.")
+
+        # Save the document in memory
+        doc_stream = BytesIO()
+        doc.save(doc_stream)
+        doc_stream.seek(0)
+        
+        return doc_stream
 
     # Navigation buttons
     col1, col2 = st.columns(2)
@@ -159,8 +209,14 @@ def result_page():
         if st.button("Restart", key="quit_button_result", use_container_width=True):
             st.session_state.page = "Landing"
     with col2:
-        if st.button("Save", key="save_button", use_container_width=True):
-            st.write("Result saved!")
+        st.download_button(
+        label="Download Result",
+        use_container_width=True,
+        key="download_button_result",
+        data=create_result_doc(),
+        file_name="result.docx",
+        mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        )
 
 
 # Initialize session state
