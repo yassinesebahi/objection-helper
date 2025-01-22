@@ -11,7 +11,6 @@
         "CustomXLMRoberta.py",
         "data/filtered_df.csv",
         "images/GASD_1.png",
-        "XLM-RoBERTa.pth",
         "XMLRobertaTokenizer.json/sentencepiece.bpe.model",
         "XMLRobertaTokenizer.json/special_tokens_map.json",
         "XMLRobertaTokenizer.json/tokenizer_config.json"

@@ -1,4 +1,5 @@
 streamlit
+gdown
 torch
 transformers
 sentencepiece

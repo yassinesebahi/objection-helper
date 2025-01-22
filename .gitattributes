@@ -1,2 +1,0 @@
-XLM-RoBERTa.bin/model.safetensors filter=lfs diff=lfs merge=lfs -text
-*.pth filter=lfs diff=lfs merge=lfs -text

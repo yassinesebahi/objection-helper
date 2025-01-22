@@ -136,9 +136,28 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 # Load XLM-RoBERTa model and tokenizer
 # ================================
 # Load the model state dictionary
+import os
+import gdown
+import streamlit as st
+
+# File details
 model_load_path = "XLM-RoBERTa.pth"
+
+@st.cache_resource
+def download_and_load_model():
+    # Check if the file already exists
+    if not os.path.isfile(model_load_path):
+        url = f"https://drive.google.com/uc?id=1Yj-TSKZNkQwCOLqWId2Ehgu-JtC9viLw"
+        gdown.download(url, model_load_path, quiet=False)
+    
+    # Load the model
+    model.load_state_dict(torch.load(model_load_path, map_location=torch.device('cpu')))
+    return model
+
+
 model = CustomXLMRoberta("xlm-roberta-base", len(unique_laws))
-model.load_state_dict(torch.load(model_load_path, map_location=torch.device('cpu')))
+# Load model
+model = download_and_load_model()
 model.to(device)
 print("Model loaded successfully.")
 
