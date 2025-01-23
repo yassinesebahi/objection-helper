@@ -4,6 +4,9 @@ import altair as alt
 from ScriptXLM_RoBERTa import predict_with_loaded_model, predict_with_top_5_laws, predict_with_top_5_words_and_sentences
 from io import BytesIO
 from docx import Document
+import os
+from git import Repo
+import tempfile
 
 def hide_streamlit_menu_footer():
     st.markdown(
